@@ -5,7 +5,9 @@ import com.github.kuzznya.timepicker.api.AuthRouterConfig
 import com.github.kuzznya.timepicker.api.ExceptionHandler
 import com.github.kuzznya.timepicker.config.configureOauth2
 import com.github.kuzznya.timepicker.config.createConfigRetriever
+import com.github.kuzznya.timepicker.config.runMigrations
 import io.vertx.core.AbstractVerticle
+import io.vertx.core.Future
 import io.vertx.core.Promise
 import io.vertx.core.Vertx
 import io.vertx.core.http.HttpMethod
@@ -22,11 +24,18 @@ class MainVerticle : AbstractVerticle() {
 
     override fun start(startPromise: Promise<Void>) {
         val configRetriever = createConfigRetriever(vertx)
-        configRetriever.getConfig { json -> start(startPromise, json.result()) }
+        configRetriever.getConfig { config ->
+            prepare(vertx, config.result()).onSuccess {
+                log.info("Preparation finished, starting HTTP server")
+                start(startPromise, config.result())
+            }.onFailure { e -> startPromise.fail(e) }
+        }
     }
 
+    private fun prepare(vertx: Vertx, config: JsonObject): Future<Unit> =
+        runMigrations(vertx, config).map { configureJackson() }
+
     private fun start(startPromise: Promise<Void>, config: JsonObject) {
-        configureJackson()
         val port = config.getInteger("port", 8080)
         vertx
             .createHttpServer()

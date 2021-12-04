@@ -38,7 +38,6 @@ object AuthRouterConfig {
                 .put("client_id", options.clientId)
                 .put("client_secret", options.clientSecret))
             .onSuccess { user ->
-                log.info("User: {} authenticated ({})", user.principal(), user.attributes())
                 runCatching {
                 val userInfo = user.attributes().getJsonObject("idToken")
                 val appUser = User(
@@ -46,7 +45,8 @@ object AuthRouterConfig {
                     name = userInfo.getString("given_name"),
                     lastName = userInfo.getString("family_name"),
                     email = userInfo.getString("email"))
-                ctx.response().end(JsonObject.mapFrom(appUser).encode()) }.onFailure { ex -> ex.printStackTrace() }
+                log.debug("User {} authenticated", appUser.username)
+                ctx.response().end(JsonObject.mapFrom(appUser).encode()) }
             }.onFailure { err ->
                 log.error("Keycloak auth error", err)
                 ctx.fail(ResponseStatusException(HttpResponseStatus.FORBIDDEN, "Exchange failed, cannot retrieve Keycloak access token"))

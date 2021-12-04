@@ -7,7 +7,6 @@ import io.vertx.ext.auth.oauth2.OAuth2Auth
 import io.vertx.ext.auth.oauth2.OAuth2FlowType
 import io.vertx.ext.auth.oauth2.OAuth2Options
 import io.vertx.ext.auth.oauth2.providers.KeycloakAuth
-import io.vertx.ext.web.Router
 
 fun getOAuth2Options(config: JsonObject): OAuth2Options {
     val authConfig = config.getJsonObject("oauth2") ?: throw Exception("oauth2.* properties not set")

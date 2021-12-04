@@ -41,6 +41,8 @@ dependencies {
     implementation("io.vertx:vertx-config-yaml")
     implementation("io.vertx:vertx-health-check")
     implementation("io.vertx:vertx-pg-client")
+    implementation("org.postgresql:postgresql:42.3.1")
+    implementation("org.liquibase:liquibase-core:4.6.1")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.0")
     implementation("org.slf4j:slf4j-api:1.7.30")
     implementation("ch.qos.logback:logback-core:1.2.3")

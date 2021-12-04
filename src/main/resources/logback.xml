@@ -7,9 +7,7 @@
         </encoder>
     </appender>
 
-    <logger name="com.github.kuzznya" level="debug">
-        <appender-ref ref="CONSOLE"/>
-    </logger>
+    <logger name="com.github.kuzznya" level="debug"/>
 
     <root level="info">
         <appender-ref ref="CONSOLE"/>
